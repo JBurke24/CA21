@@ -2,30 +2,36 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.title('Interactive Sales Dashboard')
-st.write('This dashboard will display different types of sales, from sales data and analysis.')
+st.title("Interactive Sales Dashboard")
+st.write("""
+This dashboard displays sales data analysis for different regions.
+Use the slider to select a year range and click the "Show Analysis" button to see additional insights.
+""")
 
 year_range = st.slider("Select Year Range", 2010, 2020, (2010, 2020))
 show_analysis = st.button("Show Analysis")
 
 data = {
-  'Year': [2010, 2011, 2012, 2013, 2014, 2015],
-  'Region': ['North', 'South', 'East', 'West', 'Central'],
-  'Sales Amount': [200, 210, 220, 230, 240, 250]
+    'Year': [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+    'Region': ['North', 'South', 'East', 'West', 'North', 'South', 'East', 'West', 'North', 'South', 'East'],
+    'Sales Amount': [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
 }
 
 df = pd.DataFrame(data)
+
 filtered_df = df[(df['Year'] >= year_range[0]) & (df['Year'] <= year_range[1])]
 
-selected_year = st.slider('Select a year', min_value=2010, max_value=2015, value=2013)
+st.write("Sales Data", filtered_df)
 
-st.write(f"Data for the year {selected_year}:")
-filtered_df = df[df['Year'] == selected_year]
-st.write(filtered_df)
-
-fig, ax = plt.subplots()
-ax.bar(filtered_df['Region'], filtered_df['Sales Amount'], color='skyblue')
-plt.title(f'Sales in {selected_year}')
-plt.xlabel('Region')
+plt.figure(figsize=(10, 5))
+plt.bar(filtered_df['Year'], filtered_df['Sales Amount'])
+plt.title('Sales Amount by Year')
+plt.xlabel('Year')
 plt.ylabel('Sales Amount')
-st.pyplot(fig)
+st.pyplot(plt)
+
+if show_analysis:
+    total_sales = filtered_df['Sales Amount'].sum()
+    avg_sales = filtered_df['Sales Amount'].mean()
+    st.write(f"Total Sales: {total_sales}")
+    st.write(f"Average Sales: {avg_sales}")
